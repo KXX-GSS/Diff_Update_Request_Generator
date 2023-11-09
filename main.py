@@ -1,16 +1,14 @@
 import json
 import os
 import time
-
 import utilities as utils
-
+from datetime import datetime
 
 config = utils.read_config()
 path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory')
-
-
+today = datetime.now().strftime('%Y%m%d')
 diff_update_request_name = 'diff_update_request.json'
 path_to_diff_file = os.path.join(diff_file_directory, diff_update_request_name)
 
@@ -42,7 +40,6 @@ def generate_diff_file():
     initial_deps = initial_json.get('projects')[0].get('dependencies')
     update_deps = update_json.get('projects')[0].get('dependencies')
 
-
     new_deps = find_new_dependencies(initial_deps, update_deps)
     if new_deps:
         if 'dependencies' in initial_json:
@@ -51,17 +48,17 @@ def generate_diff_file():
             initial_json['projects'][0]['dependencies'] = new_deps
 
     initial_json['timeStamp'] = str(int(time.time() * 1000))
-
+    initial_json['projects'][0]['coordinates']['artifactId'] += "_" + today
+    print(initial_json['projects'][0]['coordinates']['artifactId'])
     with open(path_to_diff_file, 'w') as file:
         json.dump(initial_json, file, indent=4)
 
-    print(new_deps)
-    print(f"Diff file created at {path_to_diff_file}")
 
+    print(f"Diff file created at {path_to_diff_file}")
 
     with open(path_to_diff_file, 'r') as file:
         diff_update_request = json.load(file)
-        print(diff_update_request)
+
 
 
 def check_files():
@@ -76,6 +73,22 @@ def check_files():
         raise NotADirectoryError(f"The diff file directory does not exist: {diff_file_directory}")
 
 
+def output_to_txt():
+    """
+    Output the diff file to a txt file.
+    """
+    with open(path_to_diff_file, 'r') as json_file:
+        data = json.load(json_file)
+
+    path_to_txt_file = path_to_diff_file.replace('.json', '.txt')
+
+    with open(path_to_txt_file, 'w') as txt_file:
+        txt_file.write(json.dumps(data, indent=4))
+
+    print(f"TXT file created at {path_to_txt_file}")
+
+
 if __name__ == '__main__':
     check_files()
     generate_diff_file()
+    output_to_txt()

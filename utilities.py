@@ -14,7 +14,7 @@ def config_file_generator():
 # ++--------------------------------++
 path_to_initial_file : ''
 path_to_update_file : ''
-path_to_diff_file : ''
+diff_file_directory : ''
 #-------------------------------------
 
 
