@@ -9,7 +9,7 @@ path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory')
 today = datetime.now().strftime('%Y%m%d')
-diff_update_request_name = 'diff_update_request.json'
+diff_update_request_name = 'diff_update_request.txt'
 path_to_diff_file = os.path.join(diff_file_directory, diff_update_request_name)
 
 
@@ -49,22 +49,21 @@ def generate_diff_file():
 
     initial_json['timeStamp'] = str(int(time.time() * 1000))
     initial_json['projects'][0]['coordinates']['artifactId'] += "_" + today
-    print(initial_json['projects'][0]['coordinates']['artifactId'])
+    print("projectName: "+initial_json['projects'][0]['coordinates']['artifactId'])
     with open(path_to_diff_file, 'w') as file:
-        json.dump(initial_json, file, indent=4)
-
-
-    print(f"Diff file created at {path_to_diff_file}")
-
-    with open(path_to_diff_file, 'r') as file:
-        diff_update_request = json.load(file)
-
+        file.write(json.dumps(initial_json, indent=4))
+    print(f"Diff file generated: {path_to_diff_file}")
 
 
 def check_files():
     """
     Check if the paths for the initial and update files are valid and if the files exist.
     """
+    print("Welcome to Update_request_different!")
+    print("This program is made by KXX (MIT License)")
+    print("The program will compare the initial file and the update file, and generate a diff file.")
+    print("--------------------------------------------------------------")
+    print("Checking files...")
     if not os.path.isfile(path_to_initial_file):
         raise FileNotFoundError(f"The initial file path is invalid or the file does not exist: {path_to_initial_file}")
     if not os.path.isfile(path_to_update_file):
@@ -73,22 +72,6 @@ def check_files():
         raise NotADirectoryError(f"The diff file directory does not exist: {diff_file_directory}")
 
 
-def output_to_txt():
-    """
-    Output the diff file to a txt file.
-    """
-    with open(path_to_diff_file, 'r') as json_file:
-        data = json.load(json_file)
-
-    path_to_txt_file = path_to_diff_file.replace('.json', '.txt')
-
-    with open(path_to_txt_file, 'w') as txt_file:
-        txt_file.write(json.dumps(data, indent=4))
-
-    print(f"TXT file created at {path_to_txt_file}")
-
-
 if __name__ == '__main__':
     check_files()
     generate_diff_file()
-    output_to_txt()
