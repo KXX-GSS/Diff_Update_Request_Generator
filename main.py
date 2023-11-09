@@ -1,21 +1,26 @@
 import json
 import os
+import time
+
 import utilities as utils
 
-# Read the configuration settings
+
 config = utils.read_config()
 path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory')
 
-# Define the name of the diff file
-diff_file_name = 'diff_file.json'
-path_to_diff_file = os.path.join(diff_file_directory, diff_file_name)
+
+diff_update_request_name = 'diff_update_request.json'
+path_to_diff_file = os.path.join(diff_file_directory, diff_update_request_name)
 
 
 def find_new_dependencies(initial_deps, update_deps):
     """
-    Identify dependencies in the update JSON that are not present in the initial JSON.
+    Find the new dependencies that are not in the initial file.
+    :param initial_deps:
+    :param update_deps:
+    :return:
     """
     initial_dep_ids = {(dep['artifactId'], dep['sha1']) for dep in initial_deps}
     new_dependencies = [
@@ -26,33 +31,37 @@ def find_new_dependencies(initial_deps, update_deps):
 
 def generate_diff_file():
     """
-    Generate a diff file that includes the initial file structure with updated dependencies.
+    Generate the diff file.
+    :return:
     """
-    # Read the content of the initial and update files
     with open(path_to_initial_file, 'r') as file:
         initial_json = json.load(file)
     with open(path_to_update_file, 'r') as file:
         update_json = json.load(file)
 
-    # Extract the dependencies list from each file
-    initial_deps = initial_json.get('dependencies', [])
-    update_deps = update_json.get('dependencies', [])
+    initial_deps = initial_json.get('projects')[0].get('dependencies')
+    update_deps = update_json.get('projects')[0].get('dependencies')
 
-    # Find new dependencies to be added to the initial structure
+
     new_deps = find_new_dependencies(initial_deps, update_deps)
-
-    # Update the dependencies list in the initial structure with new dependencies
     if new_deps:
         if 'dependencies' in initial_json:
-            initial_json['dependencies'].extend(new_deps)
+            initial_json['projects'][0]['dependencies'].extend(new_deps)
         else:
-            initial_json['dependencies'] = new_deps
+            initial_json['projects'][0]['dependencies'] = new_deps
 
-    # Write the updated initial structure to the diff file
+    initial_json['timeStamp'] = str(int(time.time() * 1000))
+
     with open(path_to_diff_file, 'w') as file:
         json.dump(initial_json, file, indent=4)
 
+    print(new_deps)
     print(f"Diff file created at {path_to_diff_file}")
+
+
+    with open(path_to_diff_file, 'r') as file:
+        diff_update_request = json.load(file)
+        print(diff_update_request)
 
 
 def check_files():
