@@ -15,6 +15,7 @@ def config_file_generator():
 path_to_initial_file : ''
 path_to_update_file : ''
 diff_file_directory : ''
+diff_update_request_name : ''
 #-------------------------------------
 
 
@@ -39,7 +40,8 @@ def read_config():
             config = {
                 'path_to_initial_file': data['path_to_initial_file'],
                 'path_to_update_file': data['path_to_update_file'],
-                'diff_file_directory': data['diff_file_directory']
+                'diff_file_directory': data['diff_file_directory'],
+                'diff_update_request_name': data['diff_update_request_name']
             }
             return config
     except (KeyError, TypeError):
