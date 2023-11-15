@@ -5,7 +5,7 @@
 ## 這是一個簡單的工具，用於生成特定文件的Update Requirements。
 
 ## How to use
-- 下載 [Release Note](https://github.com/KXX-GSS/Diff_Update_Request_Generator/release)。
+- 下載 [Release Note](https://github.com/KXX-GSS/Diff_Update_Request_Generator/releases)。
 - 填寫Config案所需的資訊。
 - 執行 Diff-Update-Request-Generator.exe 以生成新的 Update Requests。
 - 
@@ -65,7 +65,7 @@ diff_update_request_name : ''
 ## This is a simple tool to generate a diff update request for a given file.
 
 ## How to use
-- download the [latest release](https://github.com/KXX-GSS/Diff_Update_Request_Generator/release)  .
+- download the [latest release](https://github.com/KXX-GSS/Diff_Update_Request_Generator/releases)  .
 - Fill the config file with the required information.
 - Run Diff-Update-Request-Generator.exe to generate the Update Requests.
 
