@@ -8,7 +8,7 @@
 - 下載 [最新Release](https://github.com/KXX-GSS/Diff_Update_Request_Generator/releases)。
 - 填寫Config案所需的資訊。
 - 執行 Diff-Update-Request-Generator.exe 以生成新的 Update Requests。
-- 
+
 ### 系統要求
 - Python 3.6 或更新版本
 
