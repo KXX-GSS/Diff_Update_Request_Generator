@@ -1,16 +1,18 @@
 import json
 import os
 import time
-import utilities as utils
 from datetime import datetime
+import utilities as utils
 
 config = utils.read_config()
 path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory')
 today = datetime.now().strftime('%Y%m%d')
-diff_update_request_name = config.get('diff_update_request_name') or 'diff_update_request_name'
-path_to_diff_file = os.path.join(diff_file_directory, diff_update_request_name)
+
+update_request_name = config.get('diff_update_request_name') or f'diff_update_request.txt'
+update_request_project_name = config.get('diff_update_request_project_name') or f'diff_update_request_{today}'
+path_to_diff_file = os.path.join(diff_file_directory, update_request_name)
 
 
 def find_new_dependencies(initial_deps, update_deps):
@@ -48,8 +50,9 @@ def generate_diff_file():
             initial_json['projects'][0]['dependencies'] = new_deps
 
     initial_json['timeStamp'] = str(int(time.time() * 1000))
-    initial_json['projects'][0]['coordinates']['artifactId'] += "_" + today
-    print("projectName: "+initial_json['projects'][0]['coordinates']['artifactId'])
+    initial_json['projects'][0]['coordinates']['artifactId'] = update_request_project_name
+    print("projectName: " + initial_json['projects'][0]['coordinates']['artifactId'])
+    print("fileName: " + update_request_name)
     with open(path_to_diff_file, 'w') as file:
         file.write(json.dumps(initial_json, indent=4))
     print(f"Diff file generated: {path_to_diff_file}")

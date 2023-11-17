@@ -26,8 +26,12 @@ path_to_update_file : ''
 diff_file_directory : ''
 
 # The name of the diff file
-# default: diff_update_request_name
+# default: diff_update_request
 diff_update_request_name : ''
+
+# default Format :
+# default: diff_update_request
+diff_update_request_project_name : ''
 
 #-------------------------------------
 
@@ -54,7 +58,8 @@ def read_config():
                 'path_to_initial_file': data['path_to_initial_file'],
                 'path_to_update_file': data['path_to_update_file'],
                 'diff_file_directory': data['diff_file_directory'],
-                'diff_update_request_name': data['diff_update_request_name']
+                'diff_update_request_name': data['diff_update_request_name'],
+                'diff_update_request_project_name': data['diff_update_request_project_name']
             }
             return config
     except (KeyError, TypeError):
