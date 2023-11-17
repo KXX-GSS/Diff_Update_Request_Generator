@@ -9,7 +9,7 @@ path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory')
 today = datetime.now().strftime('%Y%m%d')
-diff_update_request_name = config.get('diff_update_request_name') or 'diff_update_request_name'
+diff_update_request_name = config.get('diff_update_request_name') or 'diff_update_request'
 path_to_diff_file = os.path.join(diff_file_directory, diff_update_request_name)
 
 
