@@ -13,12 +13,10 @@ def config_file_generator():
 # | Made by KXX (MIT License)        |
 # ++--------------------------------++
 
-# The path to the initial file
-# default: The current directory
+# The path to the initial file (required)
 path_to_initial_file : ''
 
-# The path to the update file
-# default: The current directory
+# The path to the update file (required)
 path_to_update_file : ''
 
 # The path to the directory where the diff file will be saved
@@ -30,7 +28,7 @@ diff_file_directory : ''
 diff_update_request_name : ''
 
 # default Format :
-# default: diff_update_request
+# default: diff_update_request_{date}
 diff_update_request_project_name : ''
 
 #-------------------------------------

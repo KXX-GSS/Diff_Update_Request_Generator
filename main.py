@@ -7,7 +7,7 @@ import utilities as utils
 config = utils.read_config()
 path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
-diff_file_directory = config.get('diff_file_directory')
+diff_file_directory = config.get('diff_file_directory') or os.getcwd()
 today = datetime.now().strftime('%Y%m%d')
 
 update_request_name = config.get('diff_update_request_name') or f'diff_update_request.txt'
