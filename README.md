@@ -23,12 +23,13 @@ diff_file_directory : ''
 
 diff_update_request_name : ''
 ```
-| 變數名稱                      | 預設值                                   | 描述                                                         |
-|------------------------------|---------------------------------------|------------------------------------------------------------|
-| path_to_initial_file         | 腳本的當前目錄。                        | 初始文件的目錄路徑。                                         |
-| path_to_update_file          | 腳本的當前目錄。                        | 更新文件的目錄路徑。                                         |
-| diff_file_directory          | 腳本的當前目錄。                        | diff更新請求的目錄路徑。                                     |
-| diff_update_request_name     | 當前日期，後接 '_diff_update_request'。 | diff更新請求的名稱。                                         |
+| 變數名稱                      | 是否必填 | 預設值                                   | 描述                                                         |
+|------------------------------|----------|---------------------------------------|------------------------------------------------------------|
+| path_to_initial_file         | 是       | 無。                                   | 初始文件的目錄路徑。                                         |
+| path_to_update_file          | 是       | 無。                                   | 更新文件的目錄路徑。                                         |
+| diff_file_directory          | 否       | 腳本的當前目錄。                        | diff_update_request的目錄路徑。                                     |
+| diff_update_request_name     | 否       | 'diff_update_request.txt'。            | diff_update_request檔案的名稱。                                         |
+| diff_update_request_project_name     | 否       | 'diff_update_request_{date}'。            | diff project名稱。                                         |
 
 ## 貢獻專案
 
