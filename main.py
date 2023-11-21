@@ -14,6 +14,7 @@ update_request_name = config.get('diff_update_request_name') or f'diff_update_re
 update_request_project_name = config.get('diff_update_request_project_name') or f'diff_update_request_{today}'
 path_to_diff_file = os.path.join(diff_file_directory, update_request_name)
 
+#TODO: exe閃退問題
 
 def find_new_dependencies(initial_deps, update_deps):
     """
@@ -23,9 +24,9 @@ def find_new_dependencies(initial_deps, update_deps):
     :return:
     """
     initial_dep_ids = {(dep['artifactId'], dep['sha1']) for dep in initial_deps}
-    new_dependencies = [
-        dep for dep in update_deps if (dep['artifactId'], dep['sha1']) not in initial_dep_ids
-    ]
+    # TODO: 待確認這個判斷機制是否有誤
+    new_dependencies = [dep for dep in update_deps if (dep.get('artifactId'), dep.get('sha1')) not in initial_dep_ids]
+
     return new_dependencies
 
 
@@ -34,9 +35,11 @@ def generate_diff_file():
     Generate the diff file.
     :return:
     """
-    with open(path_to_initial_file, 'r') as file:
+    # fix: Product中文讀寫噴錯解決
+    # TODO: 待確認若遇到systemPath路徑出現中文該怎麼處理
+    with open(path_to_initial_file, 'r', encoding='cp950', errors='ignore') as file:
         initial_json = json.load(file)
-    with open(path_to_update_file, 'r') as file:
+    with open(path_to_update_file, 'r', encoding='cp950', errors='ignore') as file:
         update_json = json.load(file)
 
     initial_deps = initial_json.get('projects')[0].get('dependencies')
