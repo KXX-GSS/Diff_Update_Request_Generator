@@ -22,7 +22,7 @@ def find_new_dependencies(initial_deps, update_deps):
     :param update_deps:
     :return:
     """
-    initial_dep_ids = {(dep['artifactId'], dep['sha1']) for dep in initial_deps}
+    initial_dep_ids = {(dep.get('artifactId'), dep.get('sha1')) for dep in initial_deps}
     # TODO: 待確認這個判斷機制是否有誤
     new_dependencies = [dep for dep in update_deps if (dep.get('artifactId'), dep.get('sha1')) not in initial_dep_ids]
 
@@ -81,6 +81,6 @@ if __name__ == '__main__':
         check_files()
         generate_diff_file()
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"[ERROR] {e}")
     finally:
         input("Press Enter to exit.")
