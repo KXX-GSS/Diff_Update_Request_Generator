@@ -77,10 +77,5 @@ def check_files():
 
 
 if __name__ == '__main__':
-    try:
-        check_files()
-        generate_diff_file()
-    except Exception as e:
-        print(f"[ERROR] {e}")
-    finally:
-        input("Press Enter to exit.")
+    check_files()
+    generate_diff_file()
