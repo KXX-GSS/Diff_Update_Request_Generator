@@ -14,7 +14,6 @@ update_request_name = config.get('diff_update_request_name') or f'diff_update_re
 update_request_project_name = config.get('diff_update_request_project_name') or f'diff_update_request_{today}'
 path_to_diff_file = os.path.join(diff_file_directory, update_request_name)
 
-#TODO: exe閃退問題
 
 def find_new_dependencies(initial_deps, update_deps):
     """
@@ -35,7 +34,6 @@ def generate_diff_file():
     Generate the diff file.
     :return:
     """
-    # fix: Product中文讀寫噴錯解決
     # TODO: 待確認若遇到systemPath路徑出現中文該怎麼處理
     with open(path_to_initial_file, 'r', encoding='cp950', errors='ignore') as file:
         initial_json = json.load(file)
@@ -79,5 +77,10 @@ def check_files():
 
 
 if __name__ == '__main__':
-    check_files()
-    generate_diff_file()
+    try:
+        check_files()
+        generate_diff_file()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        input("Press Enter to exit.")
