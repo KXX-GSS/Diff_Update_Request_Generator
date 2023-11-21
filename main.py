@@ -35,9 +35,9 @@ def generate_diff_file():
     :return:
     """
     # TODO: 待確認若遇到systemPath路徑出現中文該怎麼處理
-    with open(path_to_initial_file, 'r', encoding='cp950', errors='ignore') as file:
+    with open(path_to_initial_file, 'r', encoding='utf-8', errors='ignore') as file:
         initial_json = json.load(file)
-    with open(path_to_update_file, 'r', encoding='cp950', errors='ignore') as file:
+    with open(path_to_update_file, 'r', encoding='utf-8', errors='ignore') as file:
         update_json = json.load(file)
 
     initial_deps = initial_json.get('projects')[0].get('dependencies')
