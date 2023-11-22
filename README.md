@@ -7,7 +7,7 @@
 ## How to use
 - 下載 [最新Release](https://github.com/KXX-GSS/Diff_Update_Request_Generator/releases)。
 - 填寫Config案所需的資訊。
-- 執行 Diff-Update-Request-Generator.exe 以生成新的 Update Requests。
+- 執行 Diff-Update-Request-Generator.exe 生成新的 Update Requests。
 
 ### 系統要求
 - Python 3.6 或更新版本
@@ -45,7 +45,7 @@ diff_update_request_name : ''
 
 ### 代碼編寫/提交指南
 
-* 保持每行代碼在 100 個字元以內。
+* 保持每行代碼在 100 個字元內。
 * 變數和函數名稱使用 `snake_case` 命名方式。
 * 在檔案末尾添加一個空白行。
 * 優化代碼並移除不必要的導入。
