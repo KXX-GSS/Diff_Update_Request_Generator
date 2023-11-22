@@ -4,13 +4,14 @@ import time
 from datetime import datetime
 import utilities as utils
 
+
 config = utils.read_config()
 path_to_initial_file = config.get('path_to_initial_file')
 path_to_update_file = config.get('path_to_update_file')
 diff_file_directory = config.get('diff_file_directory') or os.getcwd()
 today = datetime.now().strftime('%Y%m%d')
 
-update_request_name = config.get('diff_update_request_name') or f'diff_update_request.txt'
+update_request_name = config.get('diff_update_request_name') or f'diff_update_request'
 update_request_project_name = config.get('diff_update_request_project_name') or f'diff_update_request_{today}'
 path_to_diff_file = os.path.join(diff_file_directory, update_request_name)
 
@@ -64,7 +65,7 @@ def generate_diff_file():
     print("fileName: " + update_request_name)
     with open(path_to_diff_file + '.txt', 'w', encoding="utf8") as file:
         file.write(json.dumps(initial_json, indent=4))
-    print(f"Diff file generated: {path_to_diff_file}"+".txt")
+    print(f"Diff file generated: {path_to_diff_file}" + ".txt")
 
 
 def check_files():
@@ -87,4 +88,3 @@ def check_files():
 if __name__ == '__main__':
     check_files()
     generate_diff_file()
-    wait = input("Press enter to exit...")
