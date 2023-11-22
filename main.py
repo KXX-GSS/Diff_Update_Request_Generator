@@ -23,7 +23,6 @@ def find_new_dependencies(initial_deps, update_deps):
     :return:
     """
     initial_dep_ids = {(dep.get('artifactId'), dep.get('sha1')) for dep in initial_deps}
-
     new_dependencies = [dep for dep in update_deps if (dep.get('artifactId'), dep.get('sha1')) not in initial_dep_ids]
 
     return new_dependencies
