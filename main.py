@@ -23,7 +23,6 @@ def find_new_dependencies(initial_deps, update_deps):
     :return:
     """
     initial_dep_ids = {(dep.get('artifactId'), dep.get('sha1')) for dep in initial_deps}
-    # TODO: 待確認這個判斷機制是否有誤
     new_dependencies = [dep for dep in update_deps if (dep.get('artifactId'), dep.get('sha1')) not in initial_dep_ids]
 
     return new_dependencies
@@ -34,11 +33,20 @@ def generate_diff_file():
     Generate the diff file.
     :return:
     """
-    # TODO: 待確認若遇到systemPath路徑出現中文該怎麼處理
-    with open(path_to_initial_file, 'r', encoding='utf-8', errors='ignore') as file:
+
+    with open(os.path.normpath(path_to_initial_file), 'r', encoding='utf-8', errors='ignore') as file:
         initial_json = json.load(file)
-    with open(path_to_update_file, 'r', encoding='utf-8', errors='ignore') as file:
+        # Normalize the systemPath field
+        for item in initial_json:
+            if 'systemPath' in item:
+                item['systemPath'] = os.path.normpath(item['systemPath'])
+
+    with open(os.path.normpath(path_to_update_file), 'r', encoding='utf-8', errors='ignore') as file:
         update_json = json.load(file)
+        # Normalize the systemPath field
+        for item in update_json:
+            if 'systemPath' in item:
+                item['systemPath'] = os.path.normpath(item['systemPath'])
 
     initial_deps = initial_json.get('projects')[0].get('dependencies')
     update_deps = update_json.get('projects')[0].get('dependencies')
@@ -54,9 +62,9 @@ def generate_diff_file():
     initial_json['projects'][0]['coordinates']['artifactId'] = update_request_project_name
     print("projectName: " + initial_json['projects'][0]['coordinates']['artifactId'])
     print("fileName: " + update_request_name)
-    with open(path_to_diff_file, 'w') as file:
+    with open(path_to_diff_file + '.txt', 'w', encoding="utf8") as file:
         file.write(json.dumps(initial_json, indent=4))
-    print(f"Diff file generated: {path_to_diff_file}")
+    print(f"Diff file generated: {path_to_diff_file}"+".txt")
 
 
 def check_files():
@@ -79,3 +87,4 @@ def check_files():
 if __name__ == '__main__':
     check_files()
     generate_diff_file()
+    wait = input("Press enter to exit...")
