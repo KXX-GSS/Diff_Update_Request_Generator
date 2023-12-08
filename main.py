@@ -33,7 +33,8 @@ def find_new_dependencies(initial_deps, update_deps):
 
 def generate_diff_file():
     """
-    Generate a diff file that contains the dependencies found in the update file but not in the initial file.
+    Generate a diff file (in .txt format) based on the initial file, updating only the dependencies,
+    file name, and timestamp.
     """
     with open(os.path.normpath(path_to_initial_file), 'r', encoding='utf-8', errors='ignore') as file:
         initial_json = json.load(file)
@@ -44,16 +45,22 @@ def generate_diff_file():
     initial_deps = initial_json.get('projects')[0].get('dependencies', [])
     update_deps = update_json.get('projects')[0].get('dependencies', [])
 
-    new_deps = find_new_dependencies(initial_deps, update_deps)
-    if new_deps:
-        initial_json['projects'][0]['dependencies'] = new_deps
+    # Find new dependencies
+    initial_dep_ids = {(dep.get('artifactId'), dep.get('sha1')) for dep in initial_deps}
+    new_deps = [dep for dep in update_deps if (dep.get('artifactId'), dep.get('sha1')) not in initial_dep_ids]
 
+    # Update dependencies in the initial JSON
+    initial_json['projects'][0]['dependencies'] = new_deps
+
+    # Update the timestamp and file name
     initial_json['timeStamp'] = str(int(time.time() * 1000))
     initial_json['projects'][0]['coordinates']['artifactId'] = update_request_project_name
 
     with open(path_to_diff_file + '.txt', 'w', encoding="utf8") as file:
         file.write(json.dumps(initial_json, indent=4))
     print(f"Diff file generated: {path_to_diff_file}.txt")
+
+
 
 
 def check_files():
