@@ -36,9 +36,8 @@ def find_new_or_updated_dependencies(initial_deps, update_deps):
     """
     Find new or updated dependencies and label them as 'Added' or 'Change Version'.
     """
-    initial_dep_dict = {(dep.get('artifactId'), dep.get('groupId')): dep for dep in initial_deps}
-    update_dep_dict = {(dep.get('artifactId'), dep.get('groupId')): dep for dep in update_deps}
-
+    initial_dep_dict = {(dep.get('artifactId'), dep.get('systemPath')): dep for dep in initial_deps}
+    update_dep_dict = {(dep.get('artifactId'), dep.get('systemPath')): dep for dep in update_deps}
     # Process direct dependencies
     for dep_key, dep in update_dep_dict.items():
         if dep_key not in initial_dep_dict:
@@ -50,7 +49,7 @@ def find_new_or_updated_dependencies(initial_deps, update_deps):
     new_or_updated_deps = find_dependencies_with_action(update_deps, 'Added') + \
                           find_dependencies_with_action(update_deps, 'Change Version')
 
-    return new_or_updated_deps, len(initial_deps), len(update_deps)
+    return new_or_updated_deps
 
 
 def generate_diff_file():
@@ -68,8 +67,7 @@ def generate_diff_file():
     initial_deps = initial_json.get('projects')[0].get('dependencies', [])
     update_deps = update_json.get('projects')[0].get('dependencies', [])
 
-    new_or_updated_deps, initial_deps_count, update_deps_count = find_new_or_updated_dependencies(initial_deps,
-                                                                                                  update_deps)
+    new_or_updated_deps = find_new_or_updated_dependencies(initial_deps, update_deps)
 
     # Create a copy of the initial JSON to avoid modifying it directly
     updated_json = initial_json.copy()
@@ -86,7 +84,9 @@ def generate_diff_file():
         file.write(json.dumps(updated_json, indent=4))
     print(f"Diff file generated: {path_to_diff_file}.txt")
 
-    return initial_deps_count, update_deps_count
+    # Return the count of dependencies in the diff file
+    diff_deps_count = len(new_or_updated_deps)
+    return diff_deps_count
 
 
 def generate_excel_report():
@@ -98,9 +98,10 @@ def generate_excel_report():
 
     new_or_updated_deps = diff_json['projects'][0]['dependencies']
 
-    excel_data = [{'artifactId': dep.get('artifactId'), 'groupId': dep.get('groupId'), 'version': dep.get('version'),
-                   'action': dep.get('action')}
-                  for dep in new_or_updated_deps]
+    excel_data = [
+        {'artifactId': dep.get('artifactId'), 'systemPath': dep.get('systemPath'), 'version': dep.get('version'),
+         'action': dep.get('action')}
+        for dep in new_or_updated_deps]
     df = pd.DataFrame(excel_data)
     excel_path = os.path.join(diff_file_directory, 'dependency_changes.xlsx')
     df.to_excel(excel_path, index=False)
@@ -122,13 +123,8 @@ def check_files():
 
 if __name__ == '__main__':
     check_files()  # Check if the files exist
-    initial_count, update_count = generate_diff_file()  # Generate diff file and get library counts
+    diff_deps_count = generate_diff_file()  # Generate diff file and get diff dependencies count
     generate_excel_report()  # Generate Excel report
 
-    # Report the change in dependencies count
-    print(f"Initial dependencies count: {initial_count}")
-    print(f"Updated dependencies count: {update_count}")
-    if initial_count != update_count:
-        print(f"Dependencies count changed. Difference: {update_count - initial_count}")
-    else:
-        print("No change in dependencies count.")
+    # Report the diff dependencies count
+    print(f"Diff dependencies count: {diff_deps_count}")
