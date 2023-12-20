@@ -31,12 +31,20 @@ def find_dependencies_with_action(deps, action):
         all_deps.extend(find_dependencies_with_action(children, action))
     return all_deps
 
+def update_dict_recursive(dep_list, dep_dict):
+    for dep in dep_list:
+        key = (dep.get('artifactId'), dep.get('systemPath'))
+        dep_dict[key] = dep
+        if 'children' in dep:
+            update_dict_recursive(dep['children'], dep_dict)
+    return dep_dict
 
 def find_new_or_updated_dependencies(initial_deps, update_deps):
     """
     Find new or updated dependencies and label them as 'Added' or 'Change Version'.
     """
-    initial_dep_dict = {(dep.get('artifactId'), dep.get('systemPath')): dep for dep in initial_deps}
+    initial_dep_dict = {}
+    initial_dep_dict = update_dict_recursive(initial_deps, initial_dep_dict)
     update_dep_dict = {(dep.get('artifactId'), dep.get('systemPath')): dep for dep in update_deps}
     # Process direct dependencies
     for dep_key, dep in update_dep_dict.items():
@@ -96,7 +104,13 @@ def generate_excel_report():
     with open(path_to_diff_file + '.txt', 'r', encoding="utf8") as file:
         diff_json = json.load(file)
 
+
+
     new_or_updated_deps = diff_json['projects'][0]['dependencies']
+    ###
+    initial_dep_dict = {}
+    new_or_updated_deps = update_dict_recursive(new_or_updated_deps, initial_dep_dict)
+    ###
 
     excel_data = [
         {'artifactId': dep.get('artifactId'), 'systemPath': dep.get('systemPath'), 'version': dep.get('version'),
@@ -124,7 +138,7 @@ def check_files():
 if __name__ == '__main__':
     check_files()  # Check if the files exist
     diff_deps_count = generate_diff_file()  # Generate diff file and get diff dependencies count
-    generate_excel_report()  # Generate Excel report
+    #generate_excel_report()  # Generate Excel report
 
     # Report the diff dependencies count
     print(f"Diff dependencies count: {diff_deps_count}")
