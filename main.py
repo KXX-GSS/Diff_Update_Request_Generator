@@ -46,12 +46,33 @@ def find_new_or_updated_dependencies(initial_deps, update_deps):
     initial_dep_dict = {}
     initial_dep_dict = update_dict_recursive(initial_deps, initial_dep_dict)
     update_dep_dict = {(dep.get('artifactId'), dep.get('systemPath')): dep for dep in update_deps}
+    given_key = ('xmlgraphics-commons',
+                 'D:\\maven3.9.0\\repository\\org\\apache\\xmlgraphics\\xmlgraphics-commons\\2.7\\xmlgraphics-commons-2.7.jar')
     # Process direct dependencies
     for dep_key, dep in update_dep_dict.items():
         if dep_key not in initial_dep_dict:
             dep['action'] = 'Added'
         elif dep.get('version') != initial_dep_dict[dep_key].get('version'):
             dep['action'] = 'Change Version'
+
+        elif len(dep.get('children') or []) > len(initial_dep_dict[dep_key].get('children') or []):
+            dep['action'] = 'Added'
+        '''
+        if dep_key == given_key:
+            update_children_count = len(dep.get('children') or [])
+            initial_children_count = len(initial_dep_dict[dep_key].get('children') or [])
+            if len(dep.get('children')) != initial_dep_dict[dep_key].get('children'):
+                print('hi')
+            check =initial_dep_dict[dep_key]
+            a = check.get('children')
+            
+            elif dep.get('children'):
+                if dep_key == given_key:
+                    print('hi')
+                    if initial_dep_dict[dep_key].get('children'):
+                        print(initial_dep_dict[dep_key].get('children'))
+                else:
+                    print('hi')'''
 
     # Find all new or updated dependencies including sub-dependencies
     new_or_updated_deps = find_dependencies_with_action(update_deps, 'Added') + \
